@@ -35,6 +35,7 @@
 
 // struct AnimalFactory;
 
+// Factory Method
 // impl AnimalFactory {
 //     fn create_animal(animal_type: AnimalType) -> Box<dyn Animal> {
 //         match animal_type {
@@ -273,133 +274,39 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Creational Pattern - Prototype (In Java)
+// Creational Pattern - Prototype
 // All prototype classes should have a common interface that makes it possible to copy objects
 
-// public interface Prototype {
-//     public Prototype getClone();
+// trait Prototype {
+//     fn get_clone(&self) -> Self;
 // }
 
-// public class Human implements Prototype{
-//     private String name;
-//     private String lastName;
-//     private int age;
-
-//     public Human(String name, String lastName, int age) {
-//         this.name = name;
-//         this.lastName = lastName;
-//         this.age = age;
-//         showHuman();
-//     }
-
-//     private void showHuman(){
-//         System.out.println(name+"\t"+lastName+"\t"+age);
-//     }
-
-//     @Override
-//     public Prototype getClone() {
-//         return new Human(name, lastName, age);
-//     }
-// }
-
-// public class Main {
-//     public static void main(String[] args) {
-//         Human human1 = new Human("Erwan", "Le Tutour", 30);
-
-//         Human human2 = (Human) human1.getClone();
-//     }
-// }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Behavioral Pattern - Observer (PubSub)
-// The Observer design pattern allows for a loosely coupled relationship between objects. The
-// subject (observable) maintains a list of observers and notifies them when changes occur,
-// without having explicit knowledge of the observers' concrete implementations. This promotes
-// modularity and enables a flexible notification mechanism.
-
-// trait YoutubeSubscriber {
-//     fn send_notification(&self, event: String);
-// }
-
-// #[allow(dead_code)]
-// struct YoutubeChannel {
+// #[derive(Debug)]
+// struct Human {
 //     name: String,
-//     subscribers: Vec<Box<dyn YoutubeSubscriber>>
+//     age: i32,
 // }
 
-// impl YoutubeChannel {
-//     fn new(name: String) -> Self {
-//         Self { name, subscribers: Vec::new() }
-//     }
-//     fn subscribe(&mut self, subscriber: Box<dyn YoutubeSubscriber>) {
-//         self.subscribers.push(subscriber);
-//     }
-
-//     fn notify(&self, event: String) {
-//         for sub in &self.subscribers {
-//             sub.send_notification(event.clone());
+// impl Prototype for Human {
+//     fn get_clone(&self) -> Self {
+//         Self {
+//             name: self.name.clone(),
+//             age: self.age,
 //         }
 //     }
 // }
 
-// struct YoutubeUser{
-//     name: String
-// }
-
-// impl YoutubeSubscriber for YoutubeUser {
-//     fn send_notification(&self, event: String) {
-//         println!("User {} received notification: {}",self.name, event)
-//     }
-// }
 // fn main() {
-//     let mut channel = YoutubeChannel::new("funtime".to_string());
-//     channel.subscribe(Box::new(YoutubeUser{name: "sub1".to_string()}));
-//     channel.subscribe(Box::new(YoutubeUser{name: "sub2".to_string()}));
-//     channel.subscribe(Box::new(YoutubeUser{name: "sub3".to_string()}));
-//     channel.notify("New video uploaded".to_string());
-// }
+//     let mut human1 = Human {
+//         name: "Chethan".to_string(),
+//         age: 21,
+//     };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+//     let human2 = human1.get_clone();
 
-// Behavioral Pattern - Strategy
-// This example demonstrates how the Strategy pattern allows for interchangeable algorithms by
-// encapsulating them in separate strategy objects and providing a unified interface (FilterStrategy)
-// for using different strategies interchangeably.
+//     human1.age = 22;
 
-// trait FilterStrategy {
-//     fn remove_value(&self, val: i32) -> bool;
-// }
-
-// struct RemoveNegativeStrategy;
-
-// impl FilterStrategy for RemoveNegativeStrategy {
-//     fn remove_value(&self, val: i32) -> bool {
-//         val >= 0
-//     }
-// }
-
-// struct RemoveOddStrategy;
-
-// impl FilterStrategy for RemoveOddStrategy {
-//     fn remove_value(&self, val: i32) -> bool {
-//         val % 2 == 0
-//     }
-// }
-
-// #[derive(Debug)]
-// struct Values(Vec<i32>);
-
-// impl Values {
-//     fn filter(&mut self, strategy: impl FilterStrategy) {
-//         self.0.retain(|val| strategy.remove_value(*val));
-//     }
-// }
-
-// fn main() {
-//     let mut values = Values(vec![-1, 3, 2, 4, -5]);
-//     values.filter(RemoveNegativeStrategy);
-//     println!("{values:?}");
+//     println!("{human1:?} {human2:?}");
 // }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1005,3 +912,409 @@
 //     let (code, body) = nginx.handle_request(create_user, "GET");
 //     println!("Url: {}\nHttpCode: {}\nBody: {}\n", create_user, code, body);
 // }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Behavioral Pattern - Observer (PubSub)
+// The Observer design pattern allows for a loosely coupled relationship between objects. The
+// subject (observable) maintains a list of observers and notifies them when changes occur,
+// without having explicit knowledge of the observers' concrete implementations. This promotes
+// modularity and enables a flexible notification mechanism.
+
+// trait YoutubeSubscriber {
+//     fn send_notification(&self, event: String);
+// }
+
+// #[allow(dead_code)]
+// struct YoutubeChannel {
+//     name: String,
+//     subscribers: Vec<Box<dyn YoutubeSubscriber>>
+// }
+
+// impl YoutubeChannel {
+//     fn new(name: String) -> Self {
+//         Self { name, subscribers: Vec::new() }
+//     }
+//     fn subscribe(&mut self, subscriber: Box<dyn YoutubeSubscriber>) {
+//         self.subscribers.push(subscriber);
+//     }
+
+//     fn notify(&self, event: String) {
+//         for sub in &self.subscribers {
+//             sub.send_notification(event.clone());
+//         }
+//     }
+// }
+
+// struct YoutubeUser{
+//     name: String
+// }
+
+// impl YoutubeSubscriber for YoutubeUser {
+//     fn send_notification(&self, event: String) {
+//         println!("User {} received notification: {}",self.name, event)
+//     }
+// }
+// fn main() {
+//     let mut channel = YoutubeChannel::new("funtime".to_string());
+//     channel.subscribe(Box::new(YoutubeUser{name: "sub1".to_string()}));
+//     channel.subscribe(Box::new(YoutubeUser{name: "sub2".to_string()}));
+//     channel.subscribe(Box::new(YoutubeUser{name: "sub3".to_string()}));
+//     channel.notify("New video uploaded".to_string());
+// }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Behavioral Pattern - Strategy
+// This example demonstrates how the Strategy pattern allows for interchangeable algorithms by
+// encapsulating them in separate strategy objects and providing a unified interface (FilterStrategy)
+// for using different strategies interchangeably.
+
+// trait FilterStrategy {
+//     fn remove_value(&self, val: i32) -> bool;
+// }
+
+// struct RemoveNegativeStrategy;
+
+// impl FilterStrategy for RemoveNegativeStrategy {
+//     fn remove_value(&self, val: i32) -> bool {
+//         val >= 0
+//     }
+// }
+
+// struct RemoveOddStrategy;
+
+// impl FilterStrategy for RemoveOddStrategy {
+//     fn remove_value(&self, val: i32) -> bool {
+//         val % 2 == 0
+//     }
+// }
+
+// #[derive(Debug)]
+// struct Values(Vec<i32>);
+
+// impl Values {
+//     fn filter(&mut self, strategy: impl FilterStrategy) {
+//         self.0.retain(|val| strategy.remove_value(*val));
+//     }
+// }
+
+// fn main() {
+//     let mut values = Values(vec![-1, 3, 2, 4, -5]);
+//     values.filter(RemoveNegativeStrategy);
+//     println!("{values:?}");
+// }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Behavioral Pattern - Chain of Responsibility
+// It allows passing request along the chain of potential handlers to handle a request generated
+// by a client.
+// Can scale well as we just have to had new independent handler and implement Department trait
+// without touching exisiting code (More flexible, less rigid)
+
+// #[derive(Default)]
+// struct User {
+//     order_placed: bool,
+//     payment_done: bool,
+//     delivered: bool,
+// }
+// trait Department {
+//     fn execute(&mut self, user: &mut User) {
+//         self.handle(user);
+//         if let Some(next) = &mut self.next() {
+//             next.execute(user);
+//         }
+//     }
+
+//     fn handle(&mut self, user: &mut User);
+
+//     fn next(&mut self) -> &mut Option<Box<dyn Department>>;
+// }
+
+// #[derive(Default)]
+// struct Order {
+//     next: Option<Box<dyn Department>>,
+// }
+
+// impl Department for Order {
+//     fn handle(&mut self, user: &mut User) {
+//         if user.order_placed {
+//             println!("Order is already placed");
+//         } else {
+//             user.order_placed = true;
+//             println!("Order placed");
+//         }
+//     }
+
+//     fn next(&mut self) -> &mut Option<Box<dyn Department>> {
+//         &mut self.next
+//     }
+// }
+
+// #[derive(Default)]
+
+// struct Payment {
+//     next: Option<Box<dyn Department>>,
+// }
+
+// impl Department for Payment {
+//     fn handle(&mut self, user: &mut User) {
+//         if user.payment_done {
+//             println!("Payment is already done");
+//         } else {
+//             user.payment_done = true;
+//             println!("Payment done");
+//         }
+//     }
+
+//     fn next(&mut self) -> &mut Option<Box<dyn Department>> {
+//         &mut self.next
+//     }
+// }
+
+// #[derive(Default)]
+
+// struct Delivery {
+//     next: Option<Box<dyn Department>>,
+// }
+
+// impl Department for Delivery {
+//     fn handle(&mut self, user: &mut User) {
+//         if user.delivered {
+//             println!("Delivery is already done");
+//         } else {
+//             user.delivered = true;
+//             println!("Delivered");
+//         }
+//     }
+
+//     fn next(&mut self) -> &mut Option<Box<dyn Department>> {
+//         &mut self.next
+//     }
+// }
+
+// fn main() {
+//     let mut user = User::default();
+
+//     let delivery = Delivery { next: None };
+//     let payment = Payment {
+//         next: Some(Box::new(delivery)),
+//     };
+//     let mut order = Order {
+//         next: Some(Box::new(payment)),
+//     };
+
+//     order.execute(&mut user);
+
+//     println!("\nThe Order has been already handled:\n");
+
+//     order.execute(&mut user);
+// }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Behavioral Pattern - Command
+// This pattern helps you combine the commands into an object and provide an unified function to
+// call the command
+
+//! Each action is encapsulated into a struct with the trait Command
+
+// use std::collections::HashMap;
+
+// trait Command {
+//     fn execute(&self);
+// }
+
+// #[derive(Copy, Clone)]
+// struct TV;
+// impl TV {
+//     fn new() -> TV {
+//         TV
+//     }
+//     fn on(&self) {
+//         println!("TV is on, watch movies.");
+//     }
+//     fn off(&self) {
+//         println!("TV is off");
+//     }
+// }
+
+// struct TVOnCommand {
+//     tv: TV,
+// }
+
+// impl TVOnCommand {
+//     fn new(tv: TV) -> TVOnCommand {
+//         TVOnCommand { tv }
+//     }
+// }
+
+// impl Command for TVOnCommand {
+//     fn execute(&self) {
+//         self.tv.on();
+//     }
+// }
+
+// struct TVOffCommand {
+//     tv: TV,
+// }
+
+// impl TVOffCommand {
+//     fn new(tv: TV) -> TVOffCommand {
+//         TVOffCommand { tv }
+//     }
+// }
+
+// impl Command for TVOffCommand {
+//     fn execute(&self) {
+//         self.tv.off();
+//     }
+// }
+
+// struct TVRemoteControl {
+//     commands: HashMap<i32, Box<dyn Command>>,
+// }
+
+// impl TVRemoteControl {
+//     fn new() -> TVRemoteControl {
+//         TVRemoteControl {
+//             commands: HashMap::new(),
+//         }
+//     }
+//     fn set_command(&mut self, idx: i32, cmd: Box<dyn Command>) {
+//         self.commands.insert(idx, cmd);
+//     }
+//     fn press_button(&self, idx: i32) {
+//         if let Some(cmd) = self.commands.get(&idx) {
+//             cmd.execute();
+//         } else {
+//             println!("do nothing.");
+//         }
+//     }
+// }
+
+// fn main() {
+//     let tv = TV::new();
+//     let mut remote_control = TVRemoteControl::new();
+//     remote_control.press_button(0);
+
+//     remote_control.set_command(1, Box::new(TVOnCommand::new(tv)));
+//     remote_control.set_command(2, Box::new(TVOffCommand::new(tv)));
+
+//     remote_control.press_button(1);
+//     remote_control.press_button(2);
+// }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Behavioral Pattern - Iterater
+// Iterator is a behavioral design pattern that lets you traverse elements of a collection without
+// exposing its underlying representation (list, stack, tree, etc.).
+
+// trait Iterator<T> {
+//     fn next(&mut self) -> Option<T>;
+//     fn current(&self) -> Option<T>;
+//     fn has_next(&self) -> bool;
+//     fn reset(&mut self);
+// }
+
+// struct Container<T> {
+//     data: Vec<T>,
+// }
+
+// struct ConcreteIterator<'a, T> {
+//     idx: usize,
+//     container: &'a Container<T>,
+// }
+
+// impl<'a, T: Clone> ConcreteIterator<'a, T> {
+//     fn new(container: &'a Container<T>) -> ConcreteIterator<T> {
+//         ConcreteIterator { idx: 0, container }
+//     }
+// }
+
+// impl<'a, T: Clone> Iterator<T> for ConcreteIterator<'a, T> {
+//     fn next(&mut self) -> Option<T> {
+//         let item = self.container.data.get(self.idx).cloned();
+//         self.idx += 1;
+//         item
+//     }
+//     fn current(&self) -> Option<T> {
+//         self.container.data.get(self.idx).cloned()
+//     }
+//     fn has_next(&self) -> bool {
+//         self.container.data.len() > self.idx
+//     }
+//     fn reset(&mut self) {
+//         self.idx = 0;
+//     }
+// }
+
+// impl<T: Clone> Container<T> {
+//     fn new() -> Container<T> {
+//         Container { data: Vec::new() }
+//     }
+//     fn add_item(&mut self, item: T) {
+//         self.data.push(item);
+//     }
+//     fn iter(&self) -> impl Iterator<T> + '_ {
+//         ConcreteIterator::new(self)
+//     }
+// }
+
+// fn main() {
+//     let mut c = Container::new();
+//     c.add_item(1);
+//     c.add_item(2);
+//     c.add_item(3);
+
+//     let mut iter = c.iter();
+//     let has_next = iter.has_next();
+//     assert_eq!(has_next, true);
+//     let item = iter.next();
+//     println!("item: {:?}", item);
+//     iter.reset();
+//     while iter.has_next() {
+//         let v = iter.next().unwrap();
+//         println!("item: {}", v);
+//     }
+//     let item = iter.next();
+//     assert_eq!(item, None);
+// }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+// Behavioral Pattern - Mediator
+// Mediator is a behavioral design pattern that reduces coupling between components of a program
+// by making them communicate indirectly, through a special mediator object.
+// A train gets a mediator object by reference.
+
+// struct User {
+//     name: String,
+//     mediator: Box<dyn ChatMediator>,
+// }
+
+// impl User {
+//     fn send(&self, message: String);
+//     fn receive(&self, message: String);
+// }
+// trait ChatMediator {
+//     fn add_user(&mut self, user: User);
+//     fn send_message(&self, user: User, message: String);
+// }
+
+// struct ChatMediatorImpl {
+//     users: Vec<User>,
+// }
+
+// impl ChatMediator for ChatMediatorImpl {
+//     fn add_user(&mut self, user: User) {
+//         self.users.push(user);
+//     }
+//     fn send_message(&self, user: User, message: String) {
+//         todo!()
+//     }
+// }
+
+fn main() {
+    let var = "## Type of Change\r\n<!-- Put an `x` in the boxes that apply -->\r\n\r\n- [ ] Bugfix\r\n- [x] New feature\r\n- [ ] Enhancement\r\n- [ ] Refactoring\r\n- [ ] Dependency updates\r\n- [ ] Documentation\r\n- [ ] CI/CD\r\n\r\n
+                    ## Description\r\nThis pull request implements the get_currency_unit from the ConnectorCommon trait for the Worldline connector. This function allows connectors to declare their accepted currency unit as either Base or Minor. For Worldline  it accepts currency as Minor units.\r\n\r\n
+                    ### Additional Changes\r\n\r\n- [ ] This PR modifies the API contract\r\n- [ ] This PR modifies the database schema\r\n- [ ] This PR modifies application configuration/environment variables\r\n\r\n##  Links to the files with corresponding changes.\r\n1. crates/router/src/connector/worldline.rs\r\n2. crates/router/src/connector/worldline/transformers.rs\r\n\r\n\r\n## Motivation and Context\r\nCloses #2249 \r\n\r\n\r\n## Checklist\r\n<!-- Put an `x` in the boxes that apply -->\r\n\r\n- [x] I formatted the code `cargo +nightly fmt --all`\r\n- [x] I addressed lints thrown by `cargo clippy`\r\n- [x] I reviewed the submitted code\r\n- [ ] I added unit tests for my changes where possible\r\n- [ ] I added a [CHANGELOG](/CHANGELOG.md) entry if applicable\r\n";
+}
