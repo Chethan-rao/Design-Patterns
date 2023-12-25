@@ -1,7 +1,6 @@
 <p align="center">
-  <img src="https://t3.gstatic.com/images?q=tbn:ANd9GcQDLHYuCOSJyhiQ5TYs08A6yXjTTa_w0FPPqEBKri8_YXOiKySn" height="100">
   <h1 align="center">
-    Rust Design Patterns
+    Design Patterns
   </h1>
 </p>
 
